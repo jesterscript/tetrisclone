@@ -33,37 +33,92 @@ private:
 	
 };
 
+class AbstractIterator {
+public:
+	virtual void First() = 0;
+	virtual void Next() = 0;
+    virtual bool IsDone () const = 0;
+	virtual AbstractTask* CurrentItem() const = 0 ;
+protected:
+	AbstractIterator(){};
+};
+
+class Process; 
+
+class TaskIterator : public AbstractIterator
+{
+public:
+	TaskIterator(const Process *collection);
+	void First();
+    void Next();
+    AbstractTask* CurrentItem() const;
+	bool IsDone()const ;
+private:
+	const Process *_collection;
+	int _current;
+
+};
+
 
 
 class Process : public AbstractTask //Composite Task class
 {
 public:
 
+	TaskIterator* CreateIterator() {
+		return new TaskIterator(this);
+    }
+
 	Process(string _NAME)
 	{
 		_name = _NAME;
 	}
+	
 	void addTask(AbstractTask* _TASK)
 	{
 		_innerTasks.push_back(_TASK);
 	}
-	AbstractTask* get(int _INDEX)
+	
+	AbstractTask* get(int _INDEX) const
 	{
 		return _innerTasks[_INDEX];
 	}
+	
+	int getCount() const
+	{
+		return _innerTasks.size();
+	}
+	
 	void Action()
 	{
+		TaskIterator* _iterator = this->CreateIterator();
 		cout << "Working on " << _name << " .. \n";
-		for(int i = 0 ; i < _innerTasks.size() ; ++i)
+		for(_iterator->First();  !_iterator->IsDone(); _iterator->Next())
 		{
-			_innerTasks[i]->Action();
+			(*_iterator).CurrentItem()->Action();
 		}
+		delete _iterator;
 	}
 private:
 	vector<AbstractTask*> _innerTasks;
 
-
 };
+
+TaskIterator::TaskIterator(const Process *collection) :
+	_collection(collection), _current(0) {
+}
+void TaskIterator::First() {
+	_current = 0;
+}
+void TaskIterator::Next()  {
+	_current++;
+}
+AbstractTask* TaskIterator::CurrentItem() const {
+	return (IsDone()?NULL:_collection->get(_current));
+}
+bool TaskIterator::IsDone() const {
+	return _current >= _collection->getCount();
+}
 
 
 int main()
