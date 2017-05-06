@@ -49,6 +49,9 @@ protected:
 	AbstractIterator(){};
 };
 
+
+
+
 class Process; 
 
 class TaskIterator : public AbstractIterator
@@ -67,7 +70,7 @@ private:
 
 
 
-class Process : public AbstractTask //Composite Task class
+class Process : public AbstractTask  //Composite Task class
 {
 public:
 
@@ -80,7 +83,7 @@ public:
 		_name = _NAME;
 	}
 	
-	void addTask(AbstractTask* _TASK)
+	void add(AbstractTask* _TASK)
 	{
 		_innerTasks.push_back(_TASK);
 	}
@@ -159,7 +162,13 @@ public:
 			_instance = new ThreadPool();
 		return _instance;
 	}
-
+	void add(Thread * _THREAD)
+	{
+		_innerThreads.push_back(_THREAD);
+	} 		
+	int getCount () const { return _innerThreads.size();}
+	Thread * get(int _CURRENT) const { return _innerThreads[_CURRENT];}
+	
 private:
 	ThreadPool(){};
 	static ThreadPool* _instance;
@@ -194,10 +203,10 @@ int main()
 	AbstractTask* _task4 = new Task("Hero Selection");
 	AbstractTask* _task5 = new Task("Game starting");
 
-	_task1->addTask(_task2);
-	_task1->addTask(_task3);
-	_task1->addTask(_task4);
-	_task1->addTask(_task5);
+	_task1->add(_task2);
+	_task1->add(_task3);
+	_task1->add(_task4);
+	_task1->add(_task5);
 	
 	
 
