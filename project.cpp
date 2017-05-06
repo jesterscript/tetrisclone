@@ -104,6 +104,25 @@ private:
 
 };
 
+class Thread
+{
+public:
+	Thread(string _TYPE)
+	{
+		_type = _TYPE;
+		if(_type == "HThread")
+			{ _memoryAllocated = 512; _priority = 1;}
+		else
+			{_memoryAllocated = 256; _priority = 5;}
+	}
+	
+private:
+	AbstractTask* _currentThread;
+	int _memoryAllocated;
+	int _priority;
+	string _type;
+};
+//---------------------------------------------
 TaskIterator::TaskIterator(const Process *collection) :
 	_collection(collection), _current(0) {
 }
@@ -120,6 +139,7 @@ bool TaskIterator::IsDone() const {
 	return _current >= _collection->getCount();
 }
 
+//-------------------------------------------
 
 int main()
 {
