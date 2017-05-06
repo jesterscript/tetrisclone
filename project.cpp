@@ -110,17 +110,35 @@ public:
 	Thread(string _TYPE)
 	{
 		_type = _TYPE;
+		_state = false;
 		if(_type == "HThread")
 			{ _memoryAllocated = 512; _priority = 1;}
 		else if(_type == "LThread")
 			{_memoryAllocated = 256; _priority = 5;}
 	}
+	void Execute()
+	{
+		display();
+		_currentTask->Action();
+	}
+	
 	void display()
 	{
 		cout << _type << " " << _memoryAllocated << " " << _priority << endl;
 	}
+	
+	bool isBusy()
+	{
+		return _state;
+	}
+
+	void assaignTask(AbstractTask* _TASK)
+	{
+		_currentTask = _TASK;
+	}
 private:
-	AbstractTask* _currentThread;
+	bool _state; // 1 for busy , 0 for idle
+	AbstractTask* _currentTask;
 	int _memoryAllocated;
 	int _priority;
 	string _type;
@@ -147,7 +165,7 @@ bool TaskIterator::IsDone() const {
 int main()
 {
 
-	/*Process* _task1 = new Process("Dota 2");
+	Process* _task1 = new Process("Dota 2");
 	AbstractTask* _task2 = new Task("Matchmaking");
 	AbstractTask* _task3 = new Task("Hero Banning");
 	AbstractTask* _task4 = new Task("Hero Selection");
@@ -158,12 +176,13 @@ int main()
 	_task1->addTask(_task4);
 	_task1->addTask(_task5);
 	
-	_task1->Action();*/
+	
 
 	Thread* _thread1 = new Thread("HThread");
-	Thread* _thread2 = new Thread("LThread");
+	
+	_thread1->assaignTask(_task1);
+	_thread1->Execute();
 
-	_thread1->display();
-	_thread2->display();
+	
 	return 0;
 }
