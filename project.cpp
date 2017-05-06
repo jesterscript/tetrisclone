@@ -3,8 +3,14 @@
 #include <vector>
 using namespace std;
 
+class Iterable
+{
+public:
+	virtual void f(){};
+private:
+};
 
-class AbstractTask 
+class AbstractTask : public Iterable
 {
 public:
 
@@ -38,7 +44,7 @@ public:
 	virtual void First() = 0;
 	virtual void Next() = 0;
     virtual bool IsDone () const = 0;
-	virtual AbstractTask* CurrentItem() const = 0 ;
+	virtual Iterable* CurrentItem() const = 0 ;
 protected:
 	AbstractIterator(){};
 };
@@ -104,7 +110,7 @@ private:
 
 };
 
-class Thread
+class Thread : public Iterable
 {
 public:
 	Thread(string _TYPE)
@@ -143,6 +149,23 @@ private:
 	int _priority;
 	string _type;
 };
+
+class ThreadPool //ThreadPool class with singleton pattern.
+{
+public:
+	static ThreadPool* getInstance()
+	{
+		if(_instance == NULL)
+			_instance = new ThreadPool();
+		return _instance;
+	}
+
+private:
+	ThreadPool(){};
+	static ThreadPool* _instance;
+	vector<Thread*> _innerThreads;
+};
+
 //---------------------------------------------
 TaskIterator::TaskIterator(const Process *collection) :
 	_collection(collection), _current(0) {
@@ -182,7 +205,7 @@ int main()
 	
 	_thread1->assaignTask(_task1);
 	_thread1->Execute();
-
+	cout << "balik 1";
 	
 	return 0;
 }
