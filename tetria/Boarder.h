@@ -4,7 +4,7 @@
 class TetrisBoard //main board class with singleton pattern.
 {
 public:
-    static int tableAsNumbers [10][20];
+    static int tableAsNumbers [30][20];
     static TetrisBoard* getInstance()
     {
         if(instance == NULL)

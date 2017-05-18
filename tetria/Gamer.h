@@ -190,7 +190,7 @@ public:
                     
             for (int i = 0; i < 20; i++) {
 
-                for(int k = 0 ; k < 10 ; k++){
+                for(int k = 0 ; k < 20 ; k++){
 
                 sf::RectangleShape cs(sf::Vector2f(_size, _size));
                 sf::Color typeColor ;

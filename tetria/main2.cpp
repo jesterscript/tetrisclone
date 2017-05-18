@@ -9,7 +9,7 @@
 
 
 TetrisBoard* TetrisBoard::instance = 0;//assigning  static instance to null.
-int TetrisBoard::tableAsNumbers[10][20] = {0};//fill the static array with zeros.
+int TetrisBoard::tableAsNumbers[30][20] = {0};//fill the static array with zeros.
 PiecePusher* PiecePusher::_instance = 0;
 
 
