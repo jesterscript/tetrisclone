@@ -1,0 +1,13 @@
+#pragma once
+#ifndef  PUSHER_H_
+#define PUSHER_H_
+
+class PiecePusher
+{
+public:
+
+private:
+
+};
+
+#endif // ! PUSHER_H_
