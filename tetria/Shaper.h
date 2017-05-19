@@ -18,7 +18,7 @@ public:
 }
     Shape(int TYPE)
     {
-
+        _boost = true;
        type = TYPE;
        tb = TetrisBoard::getInstance();
        createPart();
@@ -122,7 +122,9 @@ public:
     }
 
     void movePartDown()
-    {
+    {   
+            if(!pathIsClear())
+                return;
 
             for(int i = 0 ; i < parts.size() ;++i)
             {
@@ -137,25 +139,11 @@ public:
 
             }
     }
-        void forceMovePartDown()
-    {
 
-            for(int i = 0 ; i < parts.size() ;++i)
-            {
-
-                tb->tableAsNumbers[parts[i].first][parts[i].second] = 0;
-                parts[i].second +=1;
-
-            }
-            for(int i = 0 ; i < parts.size() ; ++i)
-            {
-                tb->tableAsNumbers[parts[i].first][parts[i].second] = type;
-
-            }
-    }
     void movePartRight()
     {
-		if (!atHorizontalBordersRight())
+
+		if (!atHorizontalBordersRight() || !horizontalPathIsClear())
 			return;
 
             for(int i = 0 ; i < parts.size() ;++i)
@@ -172,7 +160,7 @@ public:
     }
     void movePartLeft()
     {
-			if (!atHorizontalBordersLeft())
+			if (!atHorizontalBordersLeft() || !horizontalPathIsClear())
 				return;
             for(int i = 0 ; i < parts.size() ;++i)
             {
@@ -239,6 +227,22 @@ bool pathIsClear()
     }
     return answer;
 }
+bool horizontalPathIsClear()
+{
+        bool answer = true;
+    for(int i = 0 ; i < parts.size();++i)
+    {
+        if((tb->tableAsNumbers[parts[i].first - 1][parts[i].second] != 0 && !ContainsIntPair(parts,parts[i].first - 1,parts[i].second))||
+            (tb->tableAsNumbers[parts[i].first + 1][parts[i].second] != 0 && !ContainsIntPair(parts,parts[i].first + 1,parts[i].second)))
+        {
+            answer = false;
+            break;
+        }
+       
+
+    }
+    return answer;
+}
 bool atHorizontalBordersLeft()
 {
 	bool answer = true;
@@ -272,10 +276,18 @@ int getType()
 {
     return type;
 }
+bool hasBoost()
+{
+    return _boost;
+}
+void boost()
+{
+    _boost = false;
+}
 private:
     TetrisBoard* tb;
     int type;
-
+    bool _boost;
 
 };
 

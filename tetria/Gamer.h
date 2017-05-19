@@ -23,7 +23,8 @@ public:
     }
      Game()
     {
-	isCanvasDrawn = false;
+    sf::Clock _innerClock;
+    isCanvasDrawn = false;
 	sb = new Scoreboard();
 	frameTexture.loadFromFile("frame1.png");
 	frameSprite.setTexture(frameTexture);
@@ -46,15 +47,24 @@ public:
     }
     std::cout << '\n' << '\n' <<std::endl;
     while (_renderWindow.isOpen()) { //Main loop of the game.Checks whether window is open or not.
-            if(clock.getElapsedTime().asSeconds() > 1 ) //Each one second passed , the current part moves down.
+            float _dropTime = 1 - ((float)sb->getLevel())/10;
+            if(clock.getElapsedTime().asSeconds() > _dropTime) //Each one second passed , the current part moves down.
             {
+
                 sq1->movePartDown();
                 clock.restart();
             }
             if(!sq1->pathIsClear()) // pathIsClear() method checks whether way of current part is clear.
             {
                 
-
+                if(sq1->horizontalPathIsClear() && sq1->hasBoost())
+                {
+                    sq1->boost();
+                    _innerClock.restart();
+                    
+                }
+                if((_innerClock.getElapsedTime().asSeconds() > _dropTime && !sq1->hasBoost()) || !sq1->horizontalPathIsClear() )
+                {
 				int riisCounter = 0; //ris counter to calculate the score according how many rows destroyed.
                 for(int i = 0 ; i < 20 ; ++i) //Check if there any full row on the table.
                 {
@@ -71,6 +81,7 @@ public:
 						if (rowC == 10)
 						{
 							riisCounter += tb->riis(i); // Makes that row disappear and add scores to scoreboard.
+                            sb->incrementLineCounter();
 							rowC = 0;
 							
 						}
@@ -85,7 +96,9 @@ public:
                 allParts.push_back(createPiece());
                 sq1 = allParts[allParts.size()-1];
                 clock.restart();
+                }
             }
+
 
         while (_renderWindow.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
@@ -93,7 +106,7 @@ public:
             }
 
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Down && sq1->pathIsClear()) {
+                if (event.key.code == sf::Keyboard::Down) {
 
                     sq1->movePartDown();
                     for(int i = 0 ; i < 20 ; i++)
@@ -108,7 +121,7 @@ public:
                      std::cout << "-------------------------" << std::endl;
                     clock.restart();
                 }
-                if(event.key.code == sf::Keyboard::Right && sq1->pathIsClear())
+                if(event.key.code == sf::Keyboard::Right)
                 {
                     sq1->movePartRight();
                     for(int i = 0 ; i < 20 ; i++)
@@ -123,7 +136,7 @@ public:
                      std::cout << "-------------------------" << std::endl;
 
                 }
-                if(event.key.code == sf::Keyboard::Left && sq1->pathIsClear())
+                if(event.key.code == sf::Keyboard::Left)
                 {
                     sq1->movePartLeft();
                     for(int i = 0 ; i < 20 ; i++)
@@ -138,21 +151,7 @@ public:
                      std::cout << "-------------------------" << std::endl;
 
                 }
-                if(event.key.code == sf::Keyboard::Left && !sq1->pathIsClear() && sq1->atHorizontalBordersLeft())
-                {
-                    sq1->movePartLeft();
-                    for(int i = 0 ; i < 20 ; i++)
-                    {
-                        for(int j = 0 ; j < 10 ; j++)
-                        {
-                            std::cout << tb->tableAsNumbers[j][i] << " ";
-                        }
-                        std::cout << std::endl;
-
-                    }
-                     std::cout << "-------------------------" << std::endl;
-
-                }
+              
                 if(event.key.code == sf::Keyboard::A && sq1->pathIsClear())
                 {
                     sq1->rotatePartRight();
@@ -217,6 +216,8 @@ public:
             }
 			_renderWindow.draw(*sb->scoreText);
 			_renderWindow.draw(*sb->scoreValue);
+            _renderWindow.draw(*sb->levelText);
+            _renderWindow.draw(*sb->levelValue);
 			_renderWindow.draw(frameSprite);
 				
 			
@@ -253,22 +254,22 @@ private:
 		{
 			case 1:
 			{
-				calculatedScore = 40;
+				calculatedScore = 40 * sb->getLevel();
 				break;
 			}
 			case 2:
 			{
-				calculatedScore = 100;
+				calculatedScore = 100* sb->getLevel();
 				break;
 			}
 			case 3:
 			{
-				calculatedScore = 400;
+				calculatedScore = 400* sb->getLevel();
 				break;
 			}
 			case 4:
 			{
-				calculatedScore = 1200;
+				calculatedScore = 1200* sb->getLevel();
 				break;
 			}
 		}

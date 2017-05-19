@@ -27,12 +27,16 @@ public:
 		//generate();
 		int _tempType = _generatedTypes.back();
 		_generatedTypes.pop_back();
-		displayIncomingShape(12,10);
+		displayIncomingShape(12,8);
 		return new Shape(_tempType);
 	}
 	void displayIncomingShape(int _X , int _Y) //12 10
 	{
 		generate();
+
+		for(int i = _X ; i < _X + 4 ; ++i)
+			for(int k = _Y  ; k < _Y + 2 ; ++k)
+				TetrisBoard::getInstance()->tableAsNumbers[i][k] = 0; 
 
 		switch(_generatedTypes.back())
 		{
@@ -86,7 +90,7 @@ public:
 				break;
 			}
 		}
-		TetrisBoard::getInstance()->tableAsNumbers[13][10] = _generatedTypes.back();
+		
 	}
 	
 private:
