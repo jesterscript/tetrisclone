@@ -30,6 +30,6 @@ void swap (int& a ,int& b)
     b = temp;
 
 }
-int myrandom (int i) { return std::rand()%i;}
+
 
 #endif // HELPER_H
